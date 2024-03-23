@@ -22,7 +22,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-		
+
 	    <!-- Spring Boot 3+ Tracing -->
 
 	    <!-- Micrometer > Brave/OpenTelemetry > Zipkin -->
@@ -101,7 +101,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<image>
-						<name>in28min/mmv3-${project.artifactId}:${project.version}</name>
+						<name>springcommerce/${project.artifactId}:${project.version}</name>
 					</image>
 					<pullPolicy>IF_NOT_PRESENT</pullPolicy>
 				</configuration>
