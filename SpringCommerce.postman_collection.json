@@ -1,0 +1,349 @@
+{
+	"info": {
+		"_postman_id": "74b8022b-3ac6-4544-9411-1c8eb3252816",
+		"name": "Mandiri",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Product Service",
+			"item": [
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Product 4 Updated Again\",\n    \"price\": 25,\n    \"availability\": 40,\n    \"active\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{product-service-host}}/products/:uuid",
+							"host": [
+								"{{product-service-host}}"
+							],
+							"path": [
+								"products",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "5a025c4e-85c5-4332-b58f-fec812f6a615"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Fixed Product 5\",\n    \"price\": 3400,\n    \"availability\": 15\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{product-service-host}}/products",
+							"host": [
+								"{{product-service-host}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{product-service-host}}/products/:uuid",
+							"host": [
+								"{{product-service-host}}"
+							],
+							"path": [
+								"products",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "6576df90-aa8b-47b5-bde6-fb8577620c45"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{product-service-host}}/products/active?page=0&size=5",
+							"host": [
+								"{{product-service-host}}"
+							],
+							"path": [
+								"products",
+								"active"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order Service",
+			"item": [
+				{
+					"name": "Get Order by ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{order-service-host}}/orders/:id",
+							"host": [
+								"{{order-service-host}}"
+							],
+							"path": [
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "4ce22a1b-9c39-40f5-a66a-7caffb14582d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderedProducts\": [\n        {\"productUuid\": \"bd219277-c73e-4977-b392-769317601642\", \"count\": 100},\n        {\"productUuid\": \"ee2c582f-0eaf-4b1e-8924-ca5b61206d7e\", \"count\": 40}\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{order-service-host}}/orders",
+							"host": [
+								"{{order-service-host}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Checkout Order",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uuid\":\"fccc46b3-19e1-4c8e-b2a3-3c33e5d6445a\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{order-service-host}}/orders/checkout",
+							"host": [
+								"{{order-service-host}}"
+							],
+							"path": [
+								"orders",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Order",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uuid\": \"4ce22a1b-9c39-40f5-a66a-7caffb14582d\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{order-service-host}}/orders/cancel",
+							"host": [
+								"{{order-service-host}}"
+							],
+							"path": [
+								"orders",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pay Order",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uuid\":\"4ce22a1b-9c39-40f5-a66a-7caffb14582d\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{order-service-host}}/orders/pay",
+							"host": [
+								"{{order-service-host}}"
+							],
+							"path": [
+								"orders",
+								"pay"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Report Service",
+			"item": [
+				{
+					"name": "Get Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{report-service-host}}/reports/orders",
+							"host": [
+								"{{report-service-host}}"
+							],
+							"path": [
+								"reports",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{report-service-host}}/reports/orders/:id",
+							"host": [
+								"{{report-service-host}}"
+							],
+							"path": [
+								"reports",
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "4ce22a1b-9c39-40f5-a66a-7caffb14582d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{report-service-host}}/reports/orders/count",
+							"host": [
+								"{{report-service-host}}"
+							],
+							"path": [
+								"reports",
+								"orders",
+								"count"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
