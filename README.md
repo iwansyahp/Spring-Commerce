@@ -28,7 +28,7 @@ Building containerized services and be done by running following command inside 
 
 ## How to Run Locally
 
-In development mode, you can run the Docker Compose with defined configuration in `docker-compose-only-infra-ops` that provide Database (Postgresql, Redis, MongoDB), Event Streaming Tools (Apache Kafka w/ extra UI tools), Inter services tracing tools (Zipkin).
+In development mode, you can run the Docker Compose with defined configuration in `docker-compose` that provide Database (Postgresql, Redis, MongoDB), Event Streaming Tools (Apache Kafka w/ extra UI tools), Inter services tracing tools (Zipkin).
 Follow these steps to run the services in your local machine
 1. Run docker compose: `docker compose up`, make sure that all infrastructure are running. This runs the services, suppporting infrastruture and operation tools defined in `docker-compose.yaml` file. Make sure you built the services before running the service via Docker Compose.
 

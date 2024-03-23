@@ -1,0 +1,155 @@
+version: '3'
+
+services:
+  order-service:
+    image: springcommerce/order-service:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - 8083:8083
+    networks:
+      - springcommerce-network
+    depends_on:
+      - naming-service
+      - postgres
+      - redis
+      - kafka
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-service:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      MANAGEMENT.TRACING.SAMPLING.PROBABILITY: "1.0"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/spring_orders
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+  product-service:
+    image: springcommerce/product-service:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - 8082:8082
+    networks:
+      - springcommerce-network
+    depends_on:
+      - naming-service
+      - postgres
+      - kafka
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-service:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      MANAGEMENT.TRACING.SAMPLING.PROBABILITY: 1.0
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/spring_products
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+  report-service:
+    image: springcommerce/report-service:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - 8084:8084
+    networks:
+      - springcommerce-network
+    depends_on:
+      - naming-service
+      - kafka
+      - mongo
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-service:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      MANAGEMENT.TRACING.SAMPLING.PROBABILITY: 1.0
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE: "admin"
+      SPRING_DATA_MONGODB_USERNAME: mongo
+      SPRING_DATA_MONGODB_PASSWORD: mongo
+      SPRING_DATA_MONGODB_DATABASE: spring_reports
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_HOST: mongo
+
+  naming-service:
+    image: springcommerce/naming-service:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - 8761:8761
+    networks:
+      - springcommerce-network
+    environment:
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      MANAGEMENT.TRACING.SAMPLING.PROBABILITY: 1.0
+  postgres:
+    image: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - springcommerce-network
+  redis:
+    image: "redis"
+    ports:
+      - "6379:6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    networks:
+      - springcommerce-network
+  mongo:
+      image: mongo
+      restart: always
+      ports:
+        - 27017:27017
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: mongo
+        MONGO_INITDB_ROOT_PASSWORD: mongo
+      networks:
+      - springcommerce-network
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+    networks:
+      - springcommerce-network
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    networks:
+      - springcommerce-network
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    depends_on:
+      - kafka
+    ports:
+      - 8090:8080
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+    networks:
+      - springcommerce-network
+
+  # docker run -p 9411:9411 openzipkin/zipkin:2.23
+  zipkin-server:
+    image: openzipkin/zipkin:2.23
+    mem_limit: 300m
+    ports:
+      - "9411:9411"
+    networks:
+      - springcommerce-network
+    restart: always #Restart if there is a problem starting up
+
+networks:
+  springcommerce-network:
