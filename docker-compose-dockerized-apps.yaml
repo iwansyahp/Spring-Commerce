@@ -75,6 +75,17 @@ services:
     environment:
       MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
       MANAGEMENT.TRACING.SAMPLING.PROBABILITY: 1.0
+  api-gateway:
+    image: springcommerce/api-gateway:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - 8081:8081
+    networks:
+      - springcommerce-network
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-service:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      MANAGEMENT.TRACING.SAMPLING.PROBABILITY: 1.0
   postgres:
     image: "postgres"
     ports:
