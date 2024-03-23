@@ -10,14 +10,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springcommerce.orderservice.dto.CreateOrderRequest;
+import com.springcommerce.orderservice.dto.FeignPaginatedProducts;
 import com.springcommerce.orderservice.dto.OrderDTO;
 import com.springcommerce.orderservice.dto.OrderRequest;
 import com.springcommerce.orderservice.dto.OrderedProductDTO;
 import com.springcommerce.orderservice.dto.Response;
 import com.springcommerce.orderservice.service.OrderService;
+import com.springcommerce.orderservice.util.ApiGatewayProxy;
+import com.springcommerce.orderservice.util.ProductServiceProxy;
 
 @RestController
 public class OrderController {
@@ -26,10 +30,37 @@ public class OrderController {
 	
 	@Autowired
 	OrderService orderService;
+	
+	@Autowired
+	ProductServiceProxy productServiceProxy;
+	
+	@Autowired
+	ApiGatewayProxy apiGatewayProxy;
 
 	@GetMapping("/orders/{id}")
 	public ResponseEntity<Response<OrderDTO>> getOrderById(@PathVariable String id) {
 		ResponseEntity<Response<OrderDTO>> response = orderService.findOrderById(id);
+		return response;
+	}
+	
+
+	// TODO: move this to correct place
+	@GetMapping("/products/active")
+	public ResponseEntity<Response<FeignPaginatedProducts>> getActiveProductsViaFeign(
+			@RequestParam("page") int page,
+			@RequestParam("size") int size) {
+		FeignPaginatedProducts activeProducts = productServiceProxy.getActiveProducts(page, size);
+		ResponseEntity<Response<FeignPaginatedProducts>> response = ResponseEntity.ok(new Response<>(activeProducts));
+		return response;
+	}
+	
+	// TODO: move this to correct place
+	@GetMapping("/products/active/gateway")
+	public ResponseEntity<Response<FeignPaginatedProducts>> getActiveProductsViaApiGateway(
+			@RequestParam("page") int page,
+			@RequestParam("size") int size) {
+		FeignPaginatedProducts activeProducts = apiGatewayProxy.getActiveProducts(page, size);
+		ResponseEntity<Response<FeignPaginatedProducts>> response = ResponseEntity.ok(new Response<>(activeProducts));
 		return response;
 	}
 	
