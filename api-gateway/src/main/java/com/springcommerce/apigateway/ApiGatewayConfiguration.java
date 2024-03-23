@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ApiGatewayConfiguration {
-	
+
 	@Bean
 	public RouteLocator gatewayRouter(RouteLocatorBuilder builder) {
 		return builder.routes()
@@ -17,11 +17,11 @@ public class ApiGatewayConfiguration {
 								.addRequestHeader("MyHeader", "MyURI")
 								.addRequestParameter("Param", "MyValue"))
 						.uri("http://httpbin.org:80"))
-				.route(p -> p.path("/order-service/**")
+				.route(p -> p.path("/order-service/*")
 						.uri("lb://order-service"))
-				.route(p -> p.path("/product-service/**")
+				.route(p -> p.path("/product-service/*")
 						.uri("lb://product-service"))
-				.route(p -> p.path("/report-service/**")
+				.route(p -> p.path("/report-service/*")
 						.uri("lb://report-service"))
 				.build();
 	}

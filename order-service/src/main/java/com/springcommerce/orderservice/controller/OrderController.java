@@ -27,13 +27,13 @@ import com.springcommerce.orderservice.util.ProductServiceProxy;
 public class OrderController {
 
 	protected Logger logger = LoggerFactory.getLogger(OrderController.class);
-	
+
 	@Autowired
 	OrderService orderService;
-	
+
 	@Autowired
 	ProductServiceProxy productServiceProxy;
-	
+
 	@Autowired
 	ApiGatewayProxy apiGatewayProxy;
 
@@ -42,7 +42,7 @@ public class OrderController {
 		ResponseEntity<Response<OrderDTO>> response = orderService.findOrderById(id);
 		return response;
 	}
-	
+
 
 	// TODO: move this to correct place
 	@GetMapping("/products/active")
@@ -53,7 +53,7 @@ public class OrderController {
 		ResponseEntity<Response<FeignPaginatedProducts>> response = ResponseEntity.ok(new Response<>(activeProducts));
 		return response;
 	}
-	
+
 	// TODO: move this to correct place
 	@GetMapping("/products/active/gateway")
 	public ResponseEntity<Response<FeignPaginatedProducts>> getActiveProductsViaApiGateway(
@@ -63,26 +63,26 @@ public class OrderController {
 		ResponseEntity<Response<FeignPaginatedProducts>> response = ResponseEntity.ok(new Response<>(activeProducts));
 		return response;
 	}
-	
+
 	@PostMapping("/orders")
 	public ResponseEntity<Response<OrderedProductDTO>> createOrder(@RequestBody CreateOrderRequest request) {
 		logger.warn(request.toString());
 		ResponseEntity<Response<OrderedProductDTO>> response = orderService.createOrder(request);
 		return response;
 	}
-	
+
 	@PutMapping("/orders/cancel")
 	public ResponseEntity<Response<OrderedProductDTO>> cancelOrder(@RequestBody OrderRequest request) {
 		orderService.cancelOrder(request);
 		return new ResponseEntity(HttpStatus.ACCEPTED);
 	}
-	
+
 	@PutMapping("/orders/pay")
 	public ResponseEntity<Response<OrderedProductDTO>> payOrder(@RequestBody OrderRequest request) {
 		orderService.payOrder(request);
 		return new ResponseEntity(HttpStatus.ACCEPTED);
 	}
-	
+
 	@PutMapping("/orders/checkout")
 	public ResponseEntity<Response<OrderedProductDTO>> checkOutOrder(@RequestBody OrderRequest request) {
 		orderService.checkOutOrder(request);
