@@ -17,22 +17,23 @@ Eureka based service that acts as Service Registration and Discovery
 
 # Guide
 
-1. Run compose docker before running microservices
+1. Run `docker compose up` before running the services
 Testing can be done by running the application and executing API definition in Postman Collection file.
 
 
-# How to Build
+## How to Build
 Building containerized services and be done by running following command inside each service project:
 
 `mvn spring-boot:build-image` (add `-DskipTests` if needed). Once every image for services are built. The images will be displayed on Docker Desktop image lists. After running this, you can build dockerized applications via `docker compose up`
 
-# How to Run Locally
+## How to Run Locally
 
 In development mode, you can run the Docker Compose with defined configuration in `docker-compose-only-infra-ops` that provide Database (Postgresql, Redis, MongoDB), Event Streaming Tools (Apache Kafka w/ extra UI tools), Inter services tracing tools (Zipkin).
 Follow these steps to run the services in your local machine
 1. Run docker compose: `docker compose up`, make sure that all infrastructure are running. This runs the services, suppporting infrastruture and operation tools defined in `docker-compose.yaml` file. Make sure you built the services before running the service via Docker Compose.
 
-### Main Services
+# URLs
+## Main Services
 These are URLs for each services and supporting tools:
 
 - Product Service: http://localhost:8082
