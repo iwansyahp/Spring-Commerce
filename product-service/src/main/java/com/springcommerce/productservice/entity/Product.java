@@ -26,22 +26,22 @@ public class Product {
 
 	@Column(nullable = false)
 	private UUID uuid = UUID.randomUUID();
-	
+
 	private String name;
-	
+
 	private Float price;
-	
+
 	private Integer availability;
-	
+
 	@Column(nullable = false)
 	private boolean active = true;
-	
+
 	@CreationTimestamp
 	private Date createdAt;
 
 	@UpdateTimestamp
 	private Date updatedAt;
-	
+
 	private boolean deleted = false;
 
 	public Product(String name, Float price, Integer availability) {
@@ -72,7 +72,7 @@ public class Product {
 	public Long getId() {
 		return id;
 	}
-	
+
 	public UUID getUuid() {
 		return uuid;
 	}
@@ -108,7 +108,7 @@ public class Product {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 
 	public void setActive(boolean active) {
 		this.active = active;
@@ -121,7 +121,7 @@ public class Product {
 	public void setAvailability(Integer availability) {
 		this.availability = availability;
 	}
-	
+
 
 	public boolean isDeleted() {
 		return deleted;
