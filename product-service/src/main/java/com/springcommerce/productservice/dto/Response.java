@@ -1,33 +1,10 @@
 package com.springcommerce.productservice.dto;
 
-public class Response<T> {
-    private T data;
-    private String message;
-    
-	public Response(T data) {
-		super();
-		this.data = data;
-	}
-	
+public record Response<T>(T data, String message) {
 	public Response(String message) {
-		super();
-		this.message = message;
+		this(null, message);
 	}
-
-	public T getData() {
-		return data;
+	public Response(T data) {
+		this(data, null);
 	}
-
-	public void setData(T data) {
-		this.data = data;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-	
 }
