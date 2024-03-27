@@ -16,6 +16,20 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>kafka-events-releases</id>
+			<url>https://github.com/iwansyahp/spring-events/releases/download/0.0.1/springcommerce-kafka-events-0.0.1.jar</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -70,6 +84,11 @@
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.springcommerce.events</groupId>
+			<artifactId>springcommerce-kafka-events</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 	</dependencies>
 
