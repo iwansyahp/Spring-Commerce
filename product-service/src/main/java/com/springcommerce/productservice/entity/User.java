@@ -1,35 +1,31 @@
-package com.springcommerce.userservice.entity;
+package com.springcommerce.productservice.entity;
 
 import java.util.UUID;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
 @Table(schema = "public", name = "users")
 public class User {
     @Id
     private Long id;
-    private UUID uuid = UUID.randomUUID();
-    @Column("email")
+    private UUID uuid;
+    @Column(name = "email")
     private String email;
-    @Column("first_name")
+    @Column(name = "first_name")
     private String firstName;
-    @Column("last_name")
+    @Column(name = "last_name")
     private String lastName;
 
     public User() {
     }
 
-    public User(UUID uuid, String email, String firstName, String lastName) {
+    public User(String email, UUID uuid, String firstName, String lastName) {
         this.email = email;
         this.uuid = uuid;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public User(String email,String firstName, String lastName) {
-        this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
     }
