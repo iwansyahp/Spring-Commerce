@@ -69,4 +69,10 @@ public class ProductController {
 		var response = productService.create(request);
 		return response;
 	}
+
+	@PutMapping("/sync")
+	public ResponseEntity<Response<String>> syncProducts() {
+		var response = productService.syncProducts();
+		return response;
+	}
 }
