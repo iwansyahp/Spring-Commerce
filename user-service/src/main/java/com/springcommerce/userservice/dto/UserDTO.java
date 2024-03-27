@@ -1,3 +1,5 @@
 package com.springcommerce.userservice.dto;
 
-public record UserDTO(String email, String firstName, String lastName) {}
+import java.util.UUID;
+
+public record UserDTO(UUID uuid, String email, String firstName, String lastName) {}
