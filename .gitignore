@@ -26,3 +26,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Independent Submodule ###
+kafka-events/
