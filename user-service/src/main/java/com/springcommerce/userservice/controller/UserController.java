@@ -54,6 +54,4 @@ public class UserController {
     public Flux<User> list() {
         return userService.list();
     }
-
-
 }
