@@ -1,6 +1,12 @@
-CREATE TABLE IF NOT EXISTS users(
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255)
 );
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+ALTER TABLE users ADD COLUMN IF NOT EXISTS uuid uuid NOT NULL DEFAULT uuid_generate_v4();
+
+CREATE UNIQUE INDEX IF NOT EXISTS index_email
+ON users(email);
