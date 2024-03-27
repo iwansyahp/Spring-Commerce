@@ -16,6 +16,7 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import com.springcommerce.events.KafkaServiceGroups;
 import com.springcommerce.events.payload.KafkaProduct;
+import com.springcommerce.events.payload.KafkaUser;
 
 @Configuration
 @EnableKafka
@@ -36,18 +37,34 @@ public class KafkaConsumerConfiguration {
 		return props;
 	}
 
-    @Bean
-    ConsumerFactory<String, KafkaProduct> consumerFactory() {
+	@Bean(name = "kafkaProductConsumerFactory")
+    ConsumerFactory<String, KafkaProduct> kafkaProductConsumerFactory() {
 		return new DefaultKafkaConsumerFactory<>(
 				consumerConfigs(),
 			new StringDeserializer(),
 				new JsonDeserializer<KafkaProduct>(KafkaProduct.class, false));
 	}
 
-    @Bean
-    ConcurrentKafkaListenerContainerFactory<String,  KafkaProduct> kafkaListenerContainerFactory() {
-		ConcurrentKafkaListenerContainerFactory<String,  KafkaProduct> factory = new ConcurrentKafkaListenerContainerFactory<>();
-		factory.setConsumerFactory(consumerFactory());
+	@Bean(name = "kafkaProductListenerContainerFactory")
+	ConcurrentKafkaListenerContainerFactory<String, KafkaProduct> kafkaProductListenerContainerFactory() {
+		ConcurrentKafkaListenerContainerFactory<String, KafkaProduct> factory = new ConcurrentKafkaListenerContainerFactory<>();
+		factory.setConsumerFactory(kafkaProductConsumerFactory());
+
+		return factory;
+	}
+
+	@Bean(name = "kafkaUserConsumerFactory")
+    ConsumerFactory<String, KafkaUser> kafkaUserConsumerFactory() {
+		return new DefaultKafkaConsumerFactory<>(
+				consumerConfigs(),
+			new StringDeserializer(),
+				new JsonDeserializer<KafkaUser>(KafkaUser.class, false));
+	}
+
+	@Bean(name = "kafkaUserListenerContainerFactory")
+    ConcurrentKafkaListenerContainerFactory<String,  KafkaUser> kafkaUserListenerContainerFactory() {
+		ConcurrentKafkaListenerContainerFactory<String,  KafkaUser> factory = new ConcurrentKafkaListenerContainerFactory<>();
+		factory.setConsumerFactory(kafkaUserConsumerFactory());
 
 		return factory;
 	}

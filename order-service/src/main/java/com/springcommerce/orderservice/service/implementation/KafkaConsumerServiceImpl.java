@@ -9,11 +9,16 @@ import org.springframework.stereotype.Service;
 
 import com.springcommerce.events.KafkaServiceGroups;
 import com.springcommerce.events.ProductEvents;
+import com.springcommerce.events.UserEvents;
 import com.springcommerce.events.payload.KafkaProduct;
+import com.springcommerce.events.payload.KafkaUser;
 import com.springcommerce.orderservice.entity.Product;
+import com.springcommerce.orderservice.entity.User;
 import com.springcommerce.orderservice.service.AsyncProductService;
+import com.springcommerce.orderservice.service.AsyncUserService;
 import com.springcommerce.orderservice.service.KafkaConsumerService;
 import com.springcommerce.orderservice.util.ProductUtils;
+import com.springcommerce.orderservice.util.UserUtils;
 
 @Service
 public class KafkaConsumerServiceImpl implements KafkaConsumerService {
@@ -23,8 +28,14 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
 	@Autowired
 	AsyncProductService asyncProductService;
 
+	@Autowired
+	AsyncUserService asyncUserService;
+
 	@Override
-	@KafkaListener(topics = {ProductEvents.PRODUCT_TOPIC}, containerFactory = "kafkaListenerContainerFactory", groupId = KafkaServiceGroups.ORDER_SERVICE_GROUP_ID)
+	@KafkaListener(
+		topics = { ProductEvents.PRODUCT_TOPIC },
+			containerFactory = "kafkaProductListenerContainerFactory",
+		groupId = KafkaServiceGroups.ORDER_SERVICE_GROUP_ID)
 	public void consumeProductTopic(ConsumerRecord<String, KafkaProduct> event) {
 
 		var key = event.key();
@@ -43,6 +54,36 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
 		case ProductEvents.PRODUCT_CREATE_KEY: {
 			logger.info("product is created");
 			asyncProductService.upsert(product);
+			break;
+		}
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + key);
+		}
+	}
+
+	@Override
+	@KafkaListener(
+			topics = { UserEvents.USER_TOPIC },
+			containerFactory = "kafkaUserListenerContainerFactory",
+		groupId = KafkaServiceGroups.ORDER_SERVICE_GROUP_ID)
+	public void consumeUserTopic(ConsumerRecord<String, KafkaUser> event) {
+
+		var key = event.key();
+		User user = UserUtils.toEntityUser(event.value());
+		switch (key) {
+		case UserEvents.USER_DELETE_KEY: {
+			asyncUserService.delete(user);
+			logger.info("user is deleted");
+			break;
+		}
+		case UserEvents.USER_UPDATE_KEY: {
+			asyncUserService.upsert(user);
+			logger.info("user is updated");
+			break;
+		}
+		case UserEvents.USER_CREATE_KEY: {
+			logger.info("user is created");
+			asyncUserService.upsert(user);
 			break;
 		}
 		default:
