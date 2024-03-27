@@ -10,10 +10,10 @@ public class UserUtils {
     }
 
     public static UserDTO toUser(User user) {
-        return new UserDTO(user.getEmail(), user.getFirstName(), user.getLastName());
+        return new UserDTO(user.getUuid(), user.getEmail(), user.getFirstName(), user.getLastName());
     }
 
     public static KafkaUser toKafkaUser(User user) {
-        return new KafkaUser(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName());
+        return new KafkaUser(user.getUuid(), user.getEmail(), user.getFirstName(), user.getLastName());
     }
 }
