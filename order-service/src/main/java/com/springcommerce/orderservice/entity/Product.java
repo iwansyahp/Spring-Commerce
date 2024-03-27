@@ -19,26 +19,26 @@ import jakarta.persistence.Table;
 
 @SuppressWarnings("deprecation")
 @Entity
-@Table(indexes = @Index(columnList = "name"))
+@Table(indexes = @Index(columnList = "name"), name = "products", schema = "public")
 @Where(clause = "deleted = false")
 public class Product {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(nullable = false)
 	private UUID uuid;
-	
+
 	private String name;
-	
+
 	private Float price;
-	
+
 	private Integer availability;
-	
+
 	@Column(nullable = false)
 	private boolean active = true;
-	
+
 	@CreationTimestamp
 	private Date createdAt;
 
@@ -46,7 +46,7 @@ public class Product {
 	private Date updatedAt;
 
 	private boolean deleted = false;
-	
+
 	public Product(String name, Float price, Integer availability) {
 		super();
 		this.name = name;
@@ -110,7 +110,7 @@ public class Product {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 
 	public void setActive(boolean active) {
 		this.active = active;

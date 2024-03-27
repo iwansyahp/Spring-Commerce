@@ -18,24 +18,26 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "orders", schema = "public")
 public class Order {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID id;
-	
+
 	private String orderName;
-	
+
 	private Float totalPay;
-	
+
 	@Column(nullable = false)
 	private OrderStatus status = OrderStatus.WAITING_FOR_PAYMENT;
-	
+
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<OrderedProduct> orderedProducts = new ArrayList<>();
-	
+
 	@CreationTimestamp
 	private Date createdAt;
 
@@ -47,7 +49,7 @@ public class Order {
 		this.orderName = orderName;
 		this.status = status;
 	}
-	
+
 
 	public Order() {
 		super();
