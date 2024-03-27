@@ -22,4 +22,6 @@ public interface ProductService {
 	ResponseEntity<Response<ProductResponse>> update(UUID uuid, CreateUpdateProductRequest request);
 
 	ResponseEntity<Response<ProductResponse>> deleteProduct(UUID uuid);
+
+	ResponseEntity<Response<String>> syncProducts();
 }

@@ -1,10 +1,8 @@
 package com.springcommerce.productservice.service;
 
-import org.springframework.stereotype.Service;
+import com.springcommerce.events.payload.KafkaPayload;
+import com.springcommerce.events.payload.KafkaProduct;
 
-import com.springcommerce.productservice.kafka.KafkaProductMessage;
-
-@Service
 public interface KafkaProducerService {
-	void sendProductMessage(String topicName, KafkaProductMessage event);
+	void sendProductMessage(String topicName, KafkaPayload<KafkaProduct> event);
 }

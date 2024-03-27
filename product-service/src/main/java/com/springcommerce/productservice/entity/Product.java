@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 
 @SuppressWarnings("deprecation")
 @Entity
-@Table(indexes = @Index(columnList = "name"))
+@Table(indexes = @Index(columnList = "name"), name = "products", schema = "public")
 @Where(clause = "deleted = false")
 public class Product {
 	@Id

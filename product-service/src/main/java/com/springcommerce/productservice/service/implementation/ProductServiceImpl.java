@@ -11,15 +11,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.springcommerce.events.ProductEvents;
+import com.springcommerce.events.payload.KafkaPayload;
 import com.springcommerce.productservice.dto.CreateUpdateProductRequest;
 import com.springcommerce.productservice.dto.ProductResponse;
 import com.springcommerce.productservice.dto.Response;
 import com.springcommerce.productservice.entity.Product;
-import com.springcommerce.productservice.kafka.KafkaConstants;
-import com.springcommerce.productservice.kafka.KafkaProductMessage;
 import com.springcommerce.productservice.repository.ProductRepository;
 import com.springcommerce.productservice.service.KafkaProducerService;
 import com.springcommerce.productservice.service.ProductService;
+import com.springcommerce.productservice.util.ProductUtils;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -47,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
 
 		/** update replication via kafka */
 		products.stream().forEach(product ->
-			kafkaProducerService.sendProductMessage(KafkaConstants.PRODUCT_TOPIC, new KafkaProductMessage(KafkaConstants.PRODUCT_CREATE_KEY, product))
+			kafkaProducerService.sendProductMessage(ProductEvents.PRODUCT_TOPIC, new KafkaPayload<>(ProductEvents.PRODUCT_CREATE_KEY, ProductUtils.productEntityToKafkaPayload(product)))
 		);
 	}
 
@@ -57,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
 		productRepository.save(product);
 
 		kafkaProducerService.sendProductMessage(
-				KafkaConstants.PRODUCT_TOPIC, new KafkaProductMessage(KafkaConstants.PRODUCT_CREATE_KEY, product)
+			ProductEvents.PRODUCT_TOPIC, new KafkaPayload<>(ProductEvents.PRODUCT_CREATE_KEY, ProductUtils.productEntityToKafkaPayload(product))
 		);
 
 		Response<Product> response = new Response<Product>(product, "Product is created");
@@ -84,8 +85,8 @@ public class ProductServiceImpl implements ProductService {
 		productRepository.save(product);
 
 		kafkaProducerService.sendProductMessage(
-			KafkaConstants.PRODUCT_TOPIC,
-			new KafkaProductMessage(KafkaConstants.PRODUCT_UPDATE_KEY, product)
+			ProductEvents.PRODUCT_TOPIC,
+			new KafkaPayload<>(ProductEvents.PRODUCT_UPDATE_KEY, ProductUtils.productEntityToKafkaPayload(product))
 		);
 
 		ProductResponse response = new ProductResponse(product.getId(), product.getName(), product.getPrice(), product.getAvailability(), product.isActive());
@@ -101,10 +102,23 @@ public class ProductServiceImpl implements ProductService {
 		if (product.isPresent()) {
 			productRepository.deleteByUuid(cloneProduct.getUuid());
 			kafkaProducerService.sendProductMessage(
-					KafkaConstants.PRODUCT_TOPIC, new KafkaProductMessage(KafkaConstants.PRODUCT_DELETE_KEY, cloneProduct)
+					ProductEvents.PRODUCT_TOPIC,
+					new KafkaPayload<>(ProductEvents.PRODUCT_DELETE_KEY,
+							ProductUtils.productEntityToKafkaPayload(cloneProduct)
+					)
 			);
 		}
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response<>(null, "Product is removed"));
 	}
 
+	@Override
+	public ResponseEntity<Response<String>> syncProducts() {
+		List<Product> products = productRepository.findAll();
+		/** sync products via kafka */
+		products.stream().forEach(product -> {
+			kafkaProducerService.sendProductMessage(
+				ProductEvents.PRODUCT_TOPIC, new KafkaPayload<>(ProductEvents.PRODUCT_CREATE_KEY, ProductUtils.productEntityToKafkaPayload(product)));
+		});
+		return ResponseEntity.ok(new Response<>("Products are synced"));
+	}
 }

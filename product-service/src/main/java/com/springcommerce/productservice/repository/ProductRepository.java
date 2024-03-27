@@ -19,6 +19,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	Page<Product> findAll(Pageable pageable);
 	Optional<Product> findByUuid(UUID uuid);
 	@Modifying
-	@Query(value = "update Product set deleted = true where uuid = :uuid", nativeQuery = true)
+	@Query(value = "update Products set deleted = true where uuid = :uuid", nativeQuery = true)
 	void deleteByUuid(@Param("uuid") UUID uuid);
 }
