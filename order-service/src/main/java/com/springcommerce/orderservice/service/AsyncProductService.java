@@ -13,7 +13,7 @@ import com.springcommerce.orderservice.entity.Product;
 
 @SuppressWarnings("unused")
 public interface AsyncProductService {
-	void create(Product product);
+	void upsert(Product product);
 	void update(Product product);
 	void deleteProduct(Product product);
 }

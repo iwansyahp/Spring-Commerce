@@ -16,26 +16,31 @@ public class AsyncProductServiceImpl implements AsyncProductService {
 
 	@SuppressWarnings("unused")
 	private Logger logger = LoggerFactory.getLogger(AsyncProductServiceImpl.class);
-	
+
 	@Autowired
 	ProductRepository productRepository;
 
 	@Override
-	public void create(Product product) {
-		productRepository.save(product);
+	public void upsert(Product product) {
+		Optional<Product> productFromDb = productRepository.findByUuid(product.getUuid());
+		if (productFromDb.isPresent()) {
+			this.update(product);
+		} else {
+			productRepository.save(product);
+		}
 	}
 
 	@Override
 	public void update(Product product) {
 		Optional<Product> productFromDb = productRepository.findByUuid(product.getUuid());
-		
+
 		if (productFromDb.isPresent()) {
 			var updateProduct = productFromDb.get();
 			updateProduct.setName(product.getName());
 			updateProduct.setPrice(product.getPrice());
 			updateProduct.setAvailability(product.getAvailability());
 			updateProduct.setActive(product.isActive());
-			productRepository.save(updateProduct);	
+			productRepository.save(updateProduct);
 		}
 	}
 
@@ -46,5 +51,4 @@ public class AsyncProductServiceImpl implements AsyncProductService {
 			productRepository.deleteByUuid(product.getUuid());
 		}
 	}
-	
 }

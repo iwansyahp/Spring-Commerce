@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import com.springcommerce.orderservice.kafka.KafkaOrderMessage;
+import com.springcommerce.events.payload.KafkaOrder;
+import com.springcommerce.events.payload.KafkaPayload;
 import com.springcommerce.orderservice.service.KafkaProducerService;
 
 @Service
@@ -15,10 +16,10 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
 	private final Logger logger = LoggerFactory.getLogger(KafkaProducerServiceImpl.class);
 
 	  @Autowired
-	  KafkaTemplate<String, KafkaOrderMessage> kafkaTemplate;
+	  KafkaTemplate<String, KafkaPayload<KafkaOrder>> kafkaTemplate;
 
 	  @Override
-	  public void sendOrderMessage(String topicName, KafkaOrderMessage event) {
+	  public void sendOrderMessage(String topicName, KafkaPayload<KafkaOrder> event) {
 
 		String key = event.getKey();
 	    var future = kafkaTemplate.send(topicName, key, event);
